@@ -1,5 +1,5 @@
 {
-  "name": "mongo-api",
+  "name": "typescript-postgres-type-orm",
   "version": "1.0.0",
   "description": "An API project written in typescript",
   "main": "index.js",
@@ -13,7 +13,8 @@
   },
   "keywords": [
     "typescript",
-    "mongo"
+    "postgres",
+    "typeorm"
   ],
   "author": "Kipruto Barno",
   "license": "MIT",
@@ -28,6 +29,7 @@
     "express": "^4.17.1",
     "pg": "^7.17.0",
     "tsc-watch": "^4.0.0",
+    "typeorm": "^0.2.22",
     "typescript": "^3.7.4"
   },
   "devDependencies": {
