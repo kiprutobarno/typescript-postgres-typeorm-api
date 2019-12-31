@@ -1,15 +1,15 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
-import { Routes } from "./routes/routes";
+import { Route } from "./routes/contactRoutes";
 
 class App {
   public app: express.Application;
-  public routes: Routes = new Routes();
+  public route: Route = new Route();
 
   constructor() {
     this.app = express();
     this.config();
-    this.routes.routes(this.app);
+    this.route.contactRoutes(this.app);
   }
   private config(): void {
     /**ensure app supports application/json pos data*/
