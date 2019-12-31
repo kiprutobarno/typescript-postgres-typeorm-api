@@ -1,62 +1,91 @@
-import * as mongoose from "mongoose";
-import { ContactSchema } from "../models/contactModel";
+import { Contact } from "../models/contactModel";
 import { Request, Response } from "express";
+import db from "../utils/db";
 
-const Contact = mongoose.model("Contact", ContactSchema);
-
+const contact = new Contact();
 export class ContactController {
-  public createContact(req: Request, res: Response) {
-    let contact = new Contact(req.body);
-    contact.save((err, contact) => {
-      if (err) {
-        res.status(400).send(err);
-      } else {
-        res.status(201).send(contact);
+  public async createContact(req: Request, res: Response) {
+    const {
+      firstName,
+      lastName,
+      email,
+      company,
+      phone,
+      dateCreated
+    } = req.body;
+    try {
+      let data = await db.query(
+        contact.save(firstName, lastName, email, company, phone, dateCreated)
+      );
+      if (data) {
+        res.status(201).send({ message: "OK" });
       }
-    });
+    } catch (error) {
+      res.status(400).send(error);
+    }
   }
 
-  public getContacts(req: Request, res: Response) {
-    Contact.find({}, (err, contact) => {
-      if (err) {
-        res.status(400).send(err);
-      } else {
-        res.status(200).send(contact);
+  public async getContacts(req: Request, res: Response) {
+    try {
+      let { rows } = await db.query(contact.find());
+      if (rows) {
+        res.status(200).send({ status: 200, message: "OK", contacts: rows });
       }
-    });
+    } catch (error) {
+      res.status(400).send(error);
+    }
   }
 
-  public getContact(req: Request, res: Response) {
-    Contact.findById(req.params.id, (err, contact) => {
-      if (err) {
-        res.status(400).send(err);
-      } else {
-        res.status(200).send(contact);
+  public async getContact(req: Request, res: Response) {
+    try {
+      const id = req.params.id;
+      let { rows } = await db.query(contact.findById(Number(id)));
+      if (rows) {
+        res.status(200).send({ status: 200, message: "OK", contacts: rows });
       }
-    });
+    } catch (error) {
+      res.status(400).send(error);
+    }
   }
 
-  public updateContact(req: Request, res: Response) {
-    Contact.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body,
-      { new: true },
-      (err, contact) => {
-        if (err) {
-          res.status(400).send(err);
-        } else {
-          res.status(200).send({ message: "Updated" });
-        }
+  public async updateContact(req: Request, res: Response) {
+    try {
+      const id = req.params.id;
+      const {
+        firstName,
+        lastName,
+        email,
+        company,
+        phone,
+        dateCreated
+      } = req.body;
+      let data = await db.query(
+        contact.update(
+          Number(id),
+          firstName,
+          lastName,
+          email,
+          company,
+          phone,
+          dateCreated
+        )
+      );
+      if (data) {
+        let { rows } = await db.query(contact.findById(Number(id)));
+        res.status(200).send({ status: 200, message: "OK", contact: rows });
       }
-    );
+    } catch (error) {
+      res.status(400).send(error);
+    }
   }
 
   public async deleteContact(req: Request, res: Response) {
-    let data = await Contact.deleteOne({ _id: req.params.id });
-    if (!data) {
-      res.status(400).send({ message: "Error" });
-    } else {
-      res.status(200).send({ message: "Deleted!" });
+    try {
+      const id = req.params.id;
+      await db.query(contact.deleteOne(Number(id)));
+      res.status(200).send({ status: 200, message: "Deleted" });
+    } catch (error) {
+      res.status(400).send(error);
     }
   }
 }
