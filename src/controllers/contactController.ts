@@ -11,7 +11,7 @@ export class ContactController {
       if (err) {
         res.status(400).send(err);
       } else {
-        res.send(201).send(contact);
+        res.status(201).send(contact);
       }
     });
   }
@@ -21,7 +21,7 @@ export class ContactController {
       if (err) {
         res.status(400).send(err);
       } else {
-        res.send(200).send(contact);
+        res.status(200).send(contact);
       }
     });
   }
@@ -31,7 +31,7 @@ export class ContactController {
       if (err) {
         res.status(400).send(err);
       } else {
-        res.send(200).send(contact);
+        res.status(200).send(contact);
       }
     });
   }
@@ -45,18 +45,18 @@ export class ContactController {
         if (err) {
           res.status(400).send(err);
         } else {
-          res.send(200).send({ message: "Updated" });
+          res.status(200).send({ message: "Updated" });
         }
       }
     );
   }
 
   public async deleteContact(req: Request, res: Response) {
-    let data = await Contact.remove({ _id: req.params.id });
+    let data = await Contact.deleteOne({ _id: req.params.id });
     if (!data) {
       res.status(400).send({ message: "Error" });
     } else {
-      res.send(200).send({ message: "Deleted!" });
+      res.status(200).send({ message: "Deleted!" });
     }
   }
 }
